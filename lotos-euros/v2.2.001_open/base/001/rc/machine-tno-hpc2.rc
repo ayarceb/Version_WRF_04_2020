@@ -1,0 +1,193 @@
+!#######################################################################
+!
+! TNO / HPC3 computing server
+!
+!#######################################################################
+
+
+!----------------------------------------------------------------------
+! user names
+!----------------------------------------------------------------------
+
+! used for output attributes ...
+
+! name of institution:
+user.institution              :  TNO
+
+! extract user long name from environment variable:
+user.longname                 :  ${USERLONGNAME}
+
+
+!----------------------------------------------------------------------
+! environment
+!----------------------------------------------------------------------
+
+! modules loaded in job scripts:
+*.modules                     :  purge ; \
+                                 load modules ; \
+                                 load compilers/intel/14.0.1_20180216 ; \
+                                 load makedepf90 ; \
+                                 load lotos-euros
+
+
+!----------------------------------------------------------------------
+! tasks and threads
+!----------------------------------------------------------------------
+
+! number of MPI tasks in run step:
+#if "${par.mpi}" in ["True"] :
+my.run.ntask                      :  ${par.ntask}
+#elif "${par.mpi}" in ["False"] :
+my.run.ntask                      :  1
+#else
+#error Could not set number of MPI tasks for par.mpi "${par.mpi}"
+#endif
+
+! number of OpenMP threads in run step:
+#if "${par.openmp}" in ["True"] :
+my.run.nthread                    :  ${par.nthread}
+#elif "${par.openmp}" in ["False"] :
+my.run.nthread                    :  1
+#else
+#error Could not set number of OpenMP threads for par.openmp "${par.openmp}"
+#endif
+
+! total:
+my.run.nproc                  :  $(( ${my.run.ntask} * ${my.run.nthread} ))
+
+
+!----------------------------------------------------------------------
+! job scripts
+!----------------------------------------------------------------------
+
+! default class with the job script creator:
+*.script.class           :  utopya.UtopyaJobScriptBatchLSF
+
+! Define batch job option format for class 'JobScriptBatchLSF':
+!   #BSUB -f value
+lsf_format.comment       :  #
+lsf_format.prefix        :  BSUB
+lsf_format.arg           :  '-'
+lsf_format.assign        :  ' '
+lsf_format.template      :  %(key)
+lsf_format.envtemplate   :  %(env:key)
+
+! job format for this application:
+*.batch.lsf.format            :  lsf_format
+
+! which keywords:
+*.batch.lsf.options           :  name queue nodes procs memory output error
+
+! default values:
+*.batch.lsf.option.name       :  J %(env:name).${run.id}
+*.batch.lsf.option.queue      :  q normal
+*.batch.lsf.option.nodes      :  R "span[hosts=1]"
+*.batch.lsf.option.procs      :  n 1
+*.batch.lsf.option.memory     :  R "rusage[mem=850]"
+*.batch.lsf.option.output     :  oo %(env:name).out
+*.batch.lsf.option.error      :  eo  %(env:name).err
+
+! specific:
+jobtree.le.run.batch.lsf.option.procs      :  n ${my.run.nproc}
+jobtree.le.run.batch.lsf.option.memory     :  R "rusage[mem=$(( ${my.run.memory} * 1000 ))]"
+
+
+!----------------------------------------------------------------------
+! runner
+!----------------------------------------------------------------------
+
+! run model:
+#if "${par.mpi}" in ["True"]
+
+!
+! OpenMPI launcher command; options:
+!
+!  -np <ntask>                    : number of MPI taks
+!  -ouptut-filename  <basename>   : create per-task output files <basename>.<id>
+!
+le.run.command     :  mpiexec \
+                        -np ${my.run.nproc} \
+                        -output-filename le.run.out \
+                        ./lotos-euros.x ${my.run.rcfile}
+
+#else
+
+! run model, pass evaluated rcfile as argument:
+le.run.command     :  ./lotos-euros.x ${my.run.rcfile}
+
+#endif
+
+
+!----------------------------------------------------------------------
+! compiler settings
+!----------------------------------------------------------------------
+
+! GCC compiler suite, selected with environment variables:
+#include base/${my.le.patch}/rc/compiler-${COMPILER_SUITE}-${COMPILER_VERSION}.rc
+
+! MPI wrappers:
+configure.compiler.fc.mpi                   :  mpifort
+configure.compiler.fc.mpi.openmp            :  mpifort
+
+
+!----------------------------------------------------------------------
+! libraries
+!----------------------------------------------------------------------
+
+! (optional) macro to enable udunits library:
+!my.udunits.define             :  
+!my.udunits.define             :  with_udunits1
+my.udunits.define             :  with_udunits2
+
+!! define libraries:
+!my.spblas.define              :  
+!!my.spblas.define              :  with_spblas
+
+! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+! NetCDF4 library:
+configure.lib.netcdf.fflags       : -I${NETCDF4_FORTRAN_HOME}/include
+configure.lib.netcdf.ldflags      : -L${NETCDF4_FORTRAN_HOME}/lib -lnetcdff -Wl,-rpath -Wl,${NETCDF4_FORTRAN_HOME}/lib \
+                                    -L${NETCDF4_HOME}/lib -lnetcdf -Wl,-rpath -Wl,${NETCDF4_HOME}/lib \
+                                    -L${HDF5_HOME}/lib -lhdf5_hl -lhdf5 -Wl,-rpath -Wl,${HDF5_HOME}/lib
+
+! UDUnits library:
+configure.lib.udunits2.fflags     : 
+configure.lib.udunits2.ldflags    : -L${UDUNITS2_HOME}/lib -ludunits2
+!                                    -L/lib64 -lexpat
+
+!compiler.lib.mpi.fflags         : 
+!compiler.lib.mpi.libs           : 
+!
+!!! BLAS library:
+!!compiler.lib.blas.fflags        : -I${LAPACK_HOME}/include
+!!compiler.lib.blas.libs          : -L${LAPACK_HOME}/lib -lblas
+!!
+!!! Lapack library:
+!!compiler.lib.lapack.fflags      : -I${LAPACK_HOME}/include
+!!compiler.lib.lapack.libs        : -L${LAPACK_HOME}/lib -llapack
+!!
+!!! Sparse BLAS library:
+!!compiler.lib.spblas.fflags      : -I${SPBLAS_HOME}/include
+!!compiler.lib.spblas.libs        : -L${SPBLAS_HOME}/lib -lspblas
+
+
+!----------------------------------------------------------------------
+! makedep
+!----------------------------------------------------------------------
+
+! Is makedepf90 installed?
+! This flag is used in the 'expert.rc' settings:
+my.with.makedep            :  True
+
+
+!----------------------------------------------------------------------
+! model data
+!----------------------------------------------------------------------
+
+! the user scratch directory:
+my.scratch                    :  ${SCRATCH}
+
+! base path to input data files:
+my.data.dir                   :  ${LE_DATA}
+
