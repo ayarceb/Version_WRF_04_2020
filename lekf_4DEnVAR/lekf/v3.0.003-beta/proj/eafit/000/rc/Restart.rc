@@ -1,2 +1,2 @@
-kf.restart.path               : /run/media/dirac/Datos/scratch/projects/4DEnVAR/Proof_Ensemble_10_members/restart
-kf.restart.key                :  model=LEKF;expid=Proof_Ensemble_10_members
+kf.restart.path               : /run/media/dirac/Datos/scratch/projects/4DEnVAR/Tesr_agrupamiento/restart
+kf.restart.key                :  model=LEKF;expid=Tesr_agrupamiento

@@ -558,7 +558,7 @@ le.output.sat.tropomi-no2.tracer        :  no2
 ! Files produced by "EMIP/v1.2" conversion tool.
 !
 !le.output.sat.tropomi-no2.filename      :  ${my.data.dir}/EMIP/TROPOMI/%{TRACER}/${grid.name}/%{yyyy}/%{mm}/S5P_OFFL_L2_%{TRACER}_%{yyyy}%{mm}%{dd}_%{hh}%{mn}.nc
-le.output.sat.tropomi-no2.filename      :  /run/media/dirac/Datos/TROPOMI_2019_february_LOTOS/EMIP/TROPOMI/NO2/Colombia_0.09x0.09/%{yyyy}/%{mm}/S5P_OFFL_L2_%{TRACER}_%{yyyy}%{mm}%{dd}_%{hh}%{mn}.nc
+le.output.sat.tropomi-no2.filename      :  /run/media/dirac/Datos/TROPO_2019_febr_LOTOS_2_semanas/EMIP/TROPOMI/Colombia_0.09x0.09/%{yyyy}/%{mm}/S5P_OFFL_L2_%{TRACER}_%{yyyy}%{mm}%{dd}_%{hh}%{mn}.nc
 
 ! variable names:
 le.output.sat.tropomi-no2.varname.hp    :  pressure_levels

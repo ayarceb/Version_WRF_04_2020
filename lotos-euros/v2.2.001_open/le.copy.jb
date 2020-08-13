@@ -43,7 +43,7 @@ tsk = tskclass( 'lotos-euros.rc', rcbase='le' )
 #
 
 # workdir:
-wdir = "/run/media/dirac/Datos/scratch/projects/LOTOS-EUROS/test_emisiones/run"
+wdir = "/run/media/dirac/Datos/scratch/projects/LOTOS-EUROS/TROPOMI_0.75_15_Jan/run"
 # create if necessary:
 if not os.path.isdir( wdir ) : os.makedirs( wdir )
 # goto:
@@ -52,7 +52,7 @@ os.chdir( wdir )
 # job step class:
 jbsclass = utopya.ImportClass( "utopya.UtopyaJobStep" )
 # create job step object:
-jbs = jbsclass( "le.build", "/run/media/dirac/Datos/scratch/projects/LOTOS-EUROS/test_emisiones/run/lotos-euros.rc", rcbase="jobtree", env=env )
+jbs = jbsclass( "le.build", "/run/media/dirac/Datos/scratch/projects/LOTOS-EUROS/TROPOMI_0.75_15_Jan/run/lotos-euros.rc", rcbase="jobtree", env=env )
 # write job file and start:
 jbs.Run()
 
