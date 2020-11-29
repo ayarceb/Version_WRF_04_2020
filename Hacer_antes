@@ -2,7 +2,7 @@ git status
 git pull
 
 git add --all   # Realiza seguimiento a todos los archivos
-git commit -m"Actualizacion"
+git commit -m "Actualizacion"
 
 
 git push

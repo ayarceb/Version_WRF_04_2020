@@ -195,7 +195,7 @@ my.lekf.release   :  ${my.lekf.version}.${my.lekf.patch}
 my.lekf.source.dirs :  base/${my.lekf.patch} \
                        proj/eafit/000 \
                        ${my.le.source.dirs}\
-                       /run/media/dirac/Datos/Reciente_Dropbox/users/arjo/lotos-euros/TROPOMI_run_attemp/lotos-euros/v2.2.001_open/proj/tropomi/001
+                       /run/media/dirac/Datos/Reciente_Dropbox/users/arjo/lotos-euros/Version_WRF_04_2020/lotos-euros/v2.2.001_open/proj/tropomi/001
 
 
 

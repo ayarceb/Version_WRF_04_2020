@@ -850,7 +850,7 @@ kf.restart.xb.dc.endhour    : 23
 kf.restart.xb.dc.days       :  1
 !
 ! path to the stored dc files, model name and expid used in dc filenames:
-kf.restart.xb.dc.dir        : /run/media/dirac/Datos/Reciente_Dropbox/users/arjo/lotos-euros/Repositorio_Personal_Slopez/Personal/FORTRAN/LOTOS-EUROS_ANDRES/data
+kf.restart.xb.dc.dir        : /run/media/dirac/Datos/Reciente_Dropbox/users/arjo/lotos-euros/Repositorio_Personal_Slopez/Personal/FORTRAN/LOTOS-EUROS_ANDRES_dirac/data
 kf.restart.xb.dc.model      : DC
 kf.restart.xb.dc.expid      : inner
 

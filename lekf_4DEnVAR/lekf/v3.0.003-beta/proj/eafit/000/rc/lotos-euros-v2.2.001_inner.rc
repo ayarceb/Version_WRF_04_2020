@@ -156,21 +156,21 @@ log.show_filename_on_open                   :  F
 ! ----------------------------------------
 !Habilitar y configurar para 4DEnVAR
 !#include /home/slopezr2/lekf_4DEnVAR/lekf/v3.0.003-beta/proj/eafit/000/rc/timerange.rc
-
+#include /run/media/dirac/Datos/Reciente_Dropbox/users/arjo/lotos-euros/Version_WRF_04_2020/lekf_4DEnVAR/lekf/v3.0.003-beta/proj/eafit/000/rc/timerange_inner.rc
 !! timerange:
 !timerange.start             :  2012-07-01 00:00:00
 !timerange.end               :  2012-08-01 00:00:00
 
 ! testing tropomi simulations ...
-timerange.start             :  2019-02-03 0:00:00
-timerange.end               :  2019-02-04 0:00:00
+!timerange.start             :  2019-02-03 0:00:00
+!timerange.end               :  2019-02-04 0:00:00
 
 ! run in forecast mode (T|F) ?
 ! (thus, read forecast meteo series)
 forecast.mode               :  T
 ! reference time for forecast;
 ! from here onward, read from forecast files:
-forecast.timerange.base     :  2019-02-03 00:00:00
+forecast.timerange.base     :  2019-02-05 00:00:00
 
 ! maximum time step for operator spliting loop (minutes);
 ! output time steps are multiple of this:

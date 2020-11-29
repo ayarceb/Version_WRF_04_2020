@@ -559,7 +559,7 @@ le.output.sat.tropomi-no2.tracer        :  no2
 !
 !le.output.sat.tropomi-no2.filename      :  ${my.data.dir}/EMIP/TROPOMI/%{TRACER}/${grid.name}/%{yyyy}/%{mm}/S5P_OFFL_L2_%{TRACER}_%{yyyy}%{mm}%{dd}_%{hh}%{mn}.nc
 ! Change for the ensemble run domain ANDRES
-le.output.sat.tropomi-no2.filename      :  /run/media/dirac/Datos/TROPOMI_2019_february_LOTOS/EMIP/TROPOMI/NO2/Colombia_0.09x0.09/%{yyyy}/%{mm}/S5P_OFFL_L2_%{TRACER}_%{yyyy}%{mm}%{dd}_%{hh}%{mn}.nc
+le.output.sat.tropomi-no2.filename      :  /run/media/dirac/Datos/Segunda_Ventana/EMIP/TROPOMI/NO2/Colombia_0.09x0.09/%{yyyy}/%{mm}/S5P_OFFL_L2_%{TRACER}_%{yyyy}%{mm}%{dd}_%{hh}%{mn}.nc
 !le.output.sat.tropomi-no2.filename      :  /run/media/dirac/Datos/TROPO_2019_febr_LOTOS_2_semanas/EMIP/TROPOMI/NO2/Colombia_0.09x0.09/%{yyyy}/%{mm}/S5P_OFFL_L2_%{TRACER}_%{yyyy}%{mm}%{dd}_%{hh}%{mn}.nc
 
 
