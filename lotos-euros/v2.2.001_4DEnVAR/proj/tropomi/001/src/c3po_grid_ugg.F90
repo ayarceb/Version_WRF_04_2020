@@ -1807,8 +1807,8 @@ contains
     ! --- in/out ---------------------------
     
     class(T_Grid_Ugg), intent(in)    ::  self
-    real, intent(in)                 ::  lon, lat    ! [degrees]
-    real, intent(out)                ::  dist(:,:)   ! (nlon,nlat) [m]
+    real, intent(in)                 ::  lon, lat    ! deg
+    real, intent(out)                ::  dist(:,:)   ! m
     integer, intent(out)             ::  status
 
     ! --- const -----------------------------
@@ -1818,6 +1818,7 @@ contains
     ! --- local -----------------------------
     
     integer   ::  i, j
+    real      ::  d
     
     ! --- begin -----------------------------
     
@@ -1859,8 +1860,6 @@ contains
     character(len=*), parameter  ::  rname = mname//'/Grid_Ugg_RoundToResolution'
     
     ! --- local ----------------------------------
-    
-    integer     ::  ilon, ilat
 
     ! --- begin ----------------------------------
     
@@ -1871,27 +1870,9 @@ contains
       case ( 'cartesian-regular' )
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
-        ! cell index, <1 or >nlon if outside domain:
-        ilon = nint((lon-self%longitude_1d(1))/self%dlon) + 1
-        ! in or outside domain?
-        if ( (ilon >= 1) .and. (ilon <= self%nlon) ) then
-          ! copy cell center:
-          lon0 = self%longitude_1d(ilon)
-        else
-          ! round to nearby multiple of dlon:
-          lon0 = self%longitude_1d(1) + (ilon-1) * self%dlon
-        end if
-        
-        ! cell index, <1 or >nlat if outside domain:
-        ilat = nint((lat-self%latitude_1d (1))/self%dlat) + 1
-        ! in or outside domain?
-        if ( (ilat >= 1) .and. (ilat <= self%nlat) ) then
-          ! copy cell center:
-          lat0 = self%latitude_1d(ilat)
-        else
-          ! round to nearby multiple of dlat:
-          lat0 = self%latitude_1d(1) + (ilat-1) * self%dlat
-        end if
+        ! round to nearby multiple of dlon:
+        lon0 = self%longitude_1d(1) + nint((lon-self%longitude_1d(1))/self%dlon) * self%dlon
+        lat0 = self%latitude_1d (1) + nint((lat-self%latitude_1d (1))/self%dlat) * self%dlat
 
       !~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       case default
@@ -2122,6 +2103,8 @@ contains
     integer             ::  k
     real(8)             ::  cw(4)
     type(T_PlotFile)    ::  pf
+    character(len=64)   ::  linestyle
+    character(len=64)   ::  label
     
     ! --- begin ----------------------------------
     
@@ -2212,23 +2195,29 @@ contains
           call pf%Init( 'debug.py', status )
           IF_NOT_OK_RETURN(status=1)
           !~ source cells:
-          do j = ibox(3), ibox(4)
-            do i = ibox(1), ibox(2)
+          label = ', label="source cells"'          
+          do j = max(1,ibox(3)-2), min(ibox(4)+2,self%nlat)
+            do i = max(1,ibox(1)-2), min(ibox(2)+2,self%nlon)
+              ! linestyle:
+              linestyle = ', linestyle="-"'
+              if ( (i < ibox(1)) .or. (i > ibox(2)) .or. &
+                   (j < ibox(3)) .or. (j > ibox(4))      ) linestyle = ', linestyle="--"'
               ! add to plot:
-              call self%pg(i,j)%Plot( 'edges', pf, status, kwargs='color="red"' )
+              call self%pg(i,j)%Plot( 'edges', pf, status, kwargs='color="red"'//trim(linestyle)//trim(label) )
               IF_NOT_OK_RETURN(status=1)
-              !call self%pg(i,j)%Plot( 'edge-arrows', pf, status, kwargs='color="red"' )
-              !IF_NOT_OK_RETURN(status=1)
+              ! reset:
+              label = ''
             end do ! i
           end do ! j
           !~ polygons between source cell centers:
+          label = ', label="centers polygon"' 
           do j = ibox(3), max(ibox(3),ibox(4)-1)
             do i = ibox(1), max(ibox(1),ibox(2)-1)
               ! add to plot:
-              call self%mid_pg(i,j)%Plot( 'edges', pf, status, kwargs='color="green"' )
+              call self%mid_pg(i,j)%Plot( 'edges', pf, status, kwargs='color="green", linestyle="-", marker="o"'//trim(label) )
               IF_NOT_OK_RETURN(status=1)
-              !call self%mid_pg(i,j)%Plot( 'edge-arrows', pf, status, kwargs='color="green"' )
-              !IF_NOT_OK_RETURN(status=1)
+              ! reset:
+              label = ''
               !! again for info:
               !call self%mid_pg(i,j)%CornerWeights( p, cw, status, debug=.true. )
               !print *, 'xxx1 ', i, j, status
@@ -2238,11 +2227,15 @@ contains
           end do ! j
           call p%Plot( 'point', pf, status, kwargs='marker="o", color="blue"' )
           IF_NOT_OK_RETURN(status=1)
+          !~ annote:
+          call pf%WriteLine( 'ax.legend()', status, comment='# annnote:' )
+          IF_NOT_OK_RETURN(status=1)
           !~ write:
           call pf%Done( status )
           IF_NOT_OK_RETURN(status=1)
           ! info ...
           write (gol,'("no polygon between centers found holding location")'); call goErr
+          write (gol,'("  cell range : [",i0,",",i0,"] x [",i0,",",i0,"]")') ibox; call goErr
           TRACEBACK; status=1; return
         end if
         ! clear:

@@ -355,7 +355,10 @@ mixlayer.daloft                :  1000.0
 ! Level definition similar as in meteo model.
 
 ! number of layers that should be used:
+! for ECMWF   
 levels.nz                     :  18
+! for WRF 
+!levels.nz                     :  33
 ! layer combination, empty for no combination:
 metlevel.combine      :  
 
@@ -736,7 +739,7 @@ my.with.labeling    :  False
 ! ~~ restore state from restart file ?
 
 ! start from restart files (T|F) ?
-le.restart                    :  F
+le.restart                    :  T
 
 ! place where restart are read from;
 ! file names : <model>_<expid>_<name>_<ccyymmdd>_<hhmm>.nc

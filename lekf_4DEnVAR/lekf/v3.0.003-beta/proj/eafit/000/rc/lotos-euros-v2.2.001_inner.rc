@@ -167,11 +167,11 @@ log.show_filename_on_open                   :  F
 
 ! run in forecast mode (T|F) ?
 ! (thus, read forecast meteo series)
-forecast.mode               :  T
+forecast.mode               :  F
 ! reference time for forecast;
 ! from here onward, read from forecast files:
-forecast.timerange.base     :  2019-02-05 00:00:00
-
+!forecast.timerange.base     :  2019-02-02 00:00:00
+forecast.timerange.base     :${timerange.start}
 ! maximum time step for operator spliting loop (minutes);
 ! output time steps are multiple of this:
 timestep.max                :   60
